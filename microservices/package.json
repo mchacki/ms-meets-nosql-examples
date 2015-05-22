@@ -1,0 +1,17 @@
+{
+  "name": "MSMeetsNosql",
+  "version": "1.0.0",
+  "description": "Example of a set of microservices shwing the ways of communication",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Hackstein",
+  "license": "Apache 2",
+  "dependencies": {
+    "hapi": "^8.4.0",
+    "mongodb": "^2.0.33",
+    "request": "^2.55.0",
+    "seraph": "^0.11.2"
+  }
+}
