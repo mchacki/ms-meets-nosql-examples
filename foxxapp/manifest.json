@@ -1,0 +1,8 @@
+{
+  "name": "MicroServicesMeetsFoxx",
+  "description": "Example from my Microservices meets NoSQL talk",
+  "author": "Michael Hackstein",
+  "version": "1.0.0",
+  "license": "Apache 2",
+  "controllers": "app.js"
+}
