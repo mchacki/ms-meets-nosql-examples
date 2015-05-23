@@ -82,5 +82,5 @@ db._createEdgeCollection("relations");
 db.relations.save("Users/123", "Users/456", {});
 db.relations.save("Users/123", "Users/789", {});
 db.relations.save("Users/456", "Products/098", {});
-db.relations.save("Users/456", "Products/765", {});
+db.relations.save("Users/789", "Products/765", {});
 ```
