@@ -11,11 +11,10 @@
    */
   app.get("/products/:id", function(req, res) {
     var id = "Users/" + req.params("id");
-    require("console").log(id);
     var result = db._query(
-      "FOR x IN GRAPH_NEIGHBORS('ecom', @id, {direction: 'outbound', minDepth: 2, maxDepth: 2}) RETURN x.vertex",
+      "RETURN GRAPH_NEIGHBORS('ecom', @id, {direction: 'outbound', minDepth: 2, maxDepth: 2, neighborCollectionRestriction: 'Products', includeData: true})",
       {id: id }
     ).toArray();
-    res.json(result);
+    res.json(result[0]);
     }).pathParam("id", {type: joi.string().required().description("user id")});
 }());
