@@ -36,7 +36,6 @@
         // Body is of type [id: <idstring>]
         products.find({$or: req.payload}).toArray(function(err, result) {
           if (err) return reply(err);
-          console.log(result);
           reply(result);
         });
       }
