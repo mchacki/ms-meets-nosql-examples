@@ -5,7 +5,7 @@ This is the repository for the code examples shown in my Microservices meets NoS
 
 1. After checking out the repository install all node dependencies using `npm install`
 2. For the database part you need to install the following databases in their default configuration, please follow their instructions:
-  1. [Arangodb](www.arangodb.com) 
+  1. [Arangodb](www.arangodb.com) Note: The app has been written for ArangoDB 2.6 which is currently in alpha version.
   2. [Mongodb](www.mongodb.com) 
   3. [Neo4J](www.neo4j.com) in neo.js please adjust username/password
 3. Deploy the Foxx App to arangodb with `foxx-manager install foxxapp /arangodb`
@@ -68,19 +68,48 @@ Connect to ArangoDB with arangosh (the arangodb shell) and execute the following
 ```
 unix> arangosh
 
-db._create("Products");
+var gm = require("org/arangodb/general-graph");
+var g = gm._create("ecom", [gm._relation("relations", ["Users", "Products"],["Users", "Products"])]);
 db.Products.save({_key: "098", item: "Product1"})
 db.Products.save({_key: "765", item: "Product2"})
 db.Products.save({_key: "432", item: "Product3"})
 
-db._create("Users");
 db.Users.save({_key: "123", name: "Alice"})
 db.Users.save({_key: "456", name: "Bob"})
 db.Users.save({_key: "789", name: "Charly"})
 
-db._createEdgeCollection("relations");
 db.relations.save("Users/123", "Users/456", {});
 db.relations.save("Users/123", "Users/789", {});
 db.relations.save("Users/456", "Products/098", {});
 db.relations.save("Users/789", "Products/765", {});
 ```
+
+## API calls
+
+This calls can be used to test the services we have just defined.
+
+First of all Monolith vs. Microservices:
+To contact the Monolith use `curl http://127.0.0.1:2000/app`
+
+To contact the Microservice version use `curl http://127.0.0.1:9000/app`
+Note: The only difference here is the port to access the process.
+This means we can replace a running monolith with a microservice version without the users noticing.
+The result will be identical with respect to the random number at the end.
+
+In order to compare the performance you can use the apachebench tool which will execute several requests agains the endpoints.
+If you do so play around in the microservice version by starting/stopping processes and look how it effects the performance, or even try processes on different machines.
+Remember to adjust `haproxy.cfg`
+
+```
+ab -c 10 -n 10000 http://127.0.0.1:2000/app
+ab -c 10 -n 10000 http://127.0.0.1:9000/app
+```
+
+Now lets come to the NoSQL services.
+You can directly access the MongoDB and Neo4J version using `curl http://127.0.0.1:4000/products/123 | json_pp`
+
+And the Foxx application with: `curl http://127.0.0.1:8529/arangodb/products/123 | json_pp`
+
+Here the results are also identical but includes the internal attributes.
+These are included on purporse to see in the Load Balanced version which database has actually returned the result.
+Now trigger any of these databases through the Load Balancer, they should nicely alternate: `curl http://127.0.0.1:9000/products/123 | json_pp`
